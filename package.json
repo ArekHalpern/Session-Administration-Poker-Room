@@ -1,7 +1,7 @@
 {
-  "name": "fs-app-template",
+  "name": "poker-room",
   "version": "2.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "PokerRoom application to assist with session logging and waitlist UI",
   "main": "index.js",
   "scripts": {
     "build": "webpack",

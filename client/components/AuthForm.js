@@ -1,33 +1,38 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import {authenticate} from '../store'
+import React from 'react';
+import { connect } from 'react-redux';
+import { authenticate } from '../store';
 
 const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
+  const { name, displayName, handleSubmit, error } = props;
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="username">
-            <small>Username</small>
-          </label>
-          <input name="username" type="text" />
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <form onSubmit={handleSubmit} name={name} className="text-center p-4">
+        <div className="form-group">
+          <input 
+            name="username" 
+            type="text" 
+            className="form-control" 
+            placeholder="Username" 
+          />
         </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
+        <div className="form-group">
+          <input 
+            name="password" 
+            type="password" 
+            className="form-control" 
+            placeholder="Password" 
+          />
         </div>
-        <div>
-          <button type="submit">{displayName}</button>
+        <div className="form-group">
+          <button type="submit" className="btn btn-primary btn-block">{displayName}</button>
         </div>
-        {error && error.response && <div> {error.response.data} </div>}
+        {error && error.response && <div className="alert alert-danger">{error.response.data}</div>}
       </form>
     </div>
-  )
-}
+  );
+};
+
 
 /**
  * CONTAINER
