@@ -8,7 +8,7 @@ const Player = db.define('player', {
   },
   email: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: true
   },
   status: {
     type: Sequelize.ENUM('waiting', 'seated', 'left'),

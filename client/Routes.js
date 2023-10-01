@@ -4,6 +4,7 @@ import {withRouter, Route, Switch, Redirect} from 'react-router-dom'
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import AddTable from './components/AddTable';
+import AddPlayer from './components/AddPlayer';
 import {me} from './store'
 
 /**
@@ -23,6 +24,7 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/add-table" component={AddTable} />
+            <Route path="/add-player" component={AddPlayer} />
             <Redirect to="/home" />
           </Switch>
         ) : (
