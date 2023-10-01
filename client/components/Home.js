@@ -1,11 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 export const Home = props => {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="text-center">
-        <button type="button" className="btn btn-primary mb-2">Add Table</button><br/>
+        <Link to="/add-table">
+          <button type="button" className="btn btn-primary mb-2">Add Table</button>
+        </Link><br/>
         <button type="button" className="btn btn-primary mb-2">Add Player to Waitlist</button>
       </div>
     </div>
@@ -19,3 +22,4 @@ const mapState = state => {
 };
 
 export default connect(mapState)(Home);
+

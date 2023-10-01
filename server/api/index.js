@@ -1,5 +1,7 @@
 const router = require('express').Router();
 
+const tableRoutes = require('./tables');
+
 // Existing user routes
 router.use('/users', require('./users'));
 
