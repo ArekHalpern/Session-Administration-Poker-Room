@@ -12,10 +12,10 @@ const Table = db.define('table', {
     type: Sequelize.INTEGER,
     defaultValue: 10  // default number of seats
   },
-  status: {
-    type: Sequelize.ENUM('open', 'closed'),  // table status
-    defaultValue: 'open'
-  }
+//   status: {
+//     type: Sequelize.ENUM('open', 'closed'),  // table status
+//     defaultValue: 'open'
+//   }
 });
 
 module.exports = Table;

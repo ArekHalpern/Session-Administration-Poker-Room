@@ -14,13 +14,24 @@ router.get('/', async (req, res, next) => {
 
 // POST /api/tables - Create a new table
 router.post('/', async (req, res, next) => {
-  try {
-    const table = await Table.create(req.body);
-    res.status(201).json(table);
-  } catch (err) {
-    next(err);
-  }
-});
+    try {
+      const { name, seats } = req.body;
+  
+      // Prepare data for the new table
+      const tableData = { name, status: 'open' };  // Default status is 'open'
+  
+      // Only include seats if it's a valid integer and greater than 0
+      if (Number.isInteger(seats) && seats > 0) {
+        tableData.seats = seats;
+      }
+  
+      const table = await Table.create(tableData);
+  
+      res.status(201).json(table);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 // GET /api/tables/:id - Get a single table by id
 router.get('/:id', async (req, res, next) => {
