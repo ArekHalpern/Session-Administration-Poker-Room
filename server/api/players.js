@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Player } = require('../db'); 
+const { models: { Player }} = require('../db');
+
 
 // GET /api/players - Get all players
 router.get('/', async (req, res, next) => {

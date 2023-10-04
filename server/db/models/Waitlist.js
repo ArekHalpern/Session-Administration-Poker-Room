@@ -1,4 +1,3 @@
-// models/Waitlist.js
 const Sequelize = require('sequelize');
 const db = require('../db');
 
@@ -9,4 +8,5 @@ const Waitlist = db.define('waitlist', {
   },
 });
 
-module.exports = Waitlist;
+
+module.exports = { Waitlist };

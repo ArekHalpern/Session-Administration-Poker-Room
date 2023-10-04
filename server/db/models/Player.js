@@ -34,4 +34,4 @@ Player.addHook('beforeSave', (player, options) => {
   }
 });
 
-module.exports = Player;
+module.exports = { Player };
