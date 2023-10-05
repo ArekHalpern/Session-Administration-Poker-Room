@@ -5,6 +5,8 @@ const CREATE_TABLE = 'CREATE_TABLE';
 const UPDATE_TABLE = 'UPDATE_TABLE';
 const DELETE_TABLE = 'DELETE_TABLE';
 const GET_TABLES = 'GET_TABLES';
+const GET_SINGLE_TABLE = 'GET_SINGLE_TABLE';
+
 
 // Action Creators
 const createTable = (table) => ({
@@ -26,6 +28,11 @@ const getTables = (tables) => ({
   type: GET_TABLES,
   tables,
 });
+
+const getSingleTable = (table) => ({
+    type: GET_SINGLE_TABLE,
+    table,
+    });
 
 // Thunk Creators
 export const createTableThunk = (newTable) => async (dispatch) => {
@@ -64,6 +71,15 @@ export const getTablesThunk = () => async (dispatch) => {
   }
 };
 
+export const getSingleTableThunk = (tableId) => async (dispatch) => {
+    try {
+      const res = await axios.get(`/api/tables/${tableId}`);
+      dispatch(getSingleTable(res.data));
+    } catch (error) {
+      console.error('There was an error fetching the table:', error);
+    }
+  };
+
 // Initial State
 const initialState = [];
 
@@ -80,7 +96,11 @@ export default function tablesReducer(state = initialState, action) {
       return state.filter((table) => table.id !== action.tableId);
     case GET_TABLES:
       return action.tables;
-    default:
-      return state;
+      case GET_SINGLE_TABLE:
+        return state.map((table) =>
+          table.id === action.table.id ? action.table : table
+        );
+      default:
+        return state;
   }
 }

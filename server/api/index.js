@@ -8,6 +8,7 @@ router.use('/users', require('./users'));
 // New routes for tables and players
 router.use('/tables', require('./tables'));
 router.use('/players', require('./players'));
+router.use('/waitlist', require('./waitlist'));
 
 // 404 handler for unrecognized routes
 router.use((req, res, next) => {

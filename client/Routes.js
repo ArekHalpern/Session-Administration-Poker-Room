@@ -4,7 +4,8 @@ import {withRouter, Route, Switch, Redirect} from 'react-router-dom'
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import AddTable from './components/AddTable';
-import Waitlist from './components/Waitlist';
+import WaitlistDashboard from './components/WaitlistDashboard';
+import Waitlist from './components/WaitlistDashboard';
 import {me} from './store'
 
 /**
@@ -24,8 +25,7 @@ class Routes extends Component {
           <Switch>
             <Route path="/home" component={Home} />
             <Route path="/add-table" element={<AddTable />} />
-            <Route path="/waitlist" element={<Waitlist />} />
-            
+            <Route path="/waitlist" component={Waitlist} />
             <Redirect to="/home" />
           </Switch>
         ) : (

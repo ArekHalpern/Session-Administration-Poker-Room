@@ -1,6 +1,7 @@
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #184A45; 
+  background-color: #184A45;
+  color: #C2C5CC;  /* Make text color light for better visibility against dark background */
 }
 
 .navbar-dark .navbar-nav .nav-link {
@@ -9,6 +10,93 @@ body {
 
 .navbar-dark .navbar-nav .nav-link:hover {
   color: #C2C5CC;
+}
+
+.table-card {
+  transition: transform 0.2s;
+  border-radius: 10px;  /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+  background-color: #fff;  /* White background to contrast with dark body background */
+  margin: 20px;  /* Some spacing around the card */
+  padding: 20px;  /* Inner spacing */
+}
+
+.table-card:hover {
+  transform: scale(1.05);
+}
+
+.delete-button {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #d9534f;  /* Bootstrap danger color for delete button */
+  color: #fff;  /* White text color for delete button */
+  border: none;  /* Remove border */
+  border-radius: 4px;  /* Rounded corners */
+}
+
+.delete-button:hover {
+  background-color: #c9302c;  /* Darken background color on hover */
+}
+
+/* Styling for the table */
+.table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.table thead th {
+  background-color: #2E5E5C;
+  color: #fff;
+  border: none;
+}
+
+.table tbody tr {
+  background-color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #e0f7fa;  /* Light teal background on hover */
+}
+
+.table tbody td {
+  border: none;
+}
+
+/* Styling for the form controls */
+.form-control {
+  border-radius: 4px;  /* Rounded corners */
+  border: 1px solid #ccc;  /* Standard border */
+}
+
+/* Styling for other buttons */
+.button {
+  border-radius: 4px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.button-primary {
+  background-color: #0275d8;  /* Bootstrap primary color */
+  color: #fff;
+}
+
+.button-primary:hover {
+  background-color: #025aa5;  /* Darken background color on hover */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .table-card {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .delete-button {
+    padding: 0.125rem 0.25rem;
+  }
 }
 
 

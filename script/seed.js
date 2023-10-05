@@ -1,6 +1,6 @@
 'use strict'
 
-const {db, models: {User, Player, Table, Seat} } = require('../server/db')
+const { db, models: { User, Player, Table, Waitlist } } = require('../server/db')
 
 /**
  * seed - this function clears the database, updates tables to
@@ -15,16 +15,46 @@ async function seed() {
     User.create({ username: 'admin', password: '123' }),
   ])
 
-  
+  // Creating Players
+  const players = await Promise.all([
+    Player.create({ name: 'John Doe' }),
+    Player.create({ name: 'Jane Smith' }),
+    // ... more players as needed
+  ])
 
+  // Ensure players are saved and have IDs
+  await Promise.all(players.map(player => player.save()))
 
+  // Creating Tables
+  const tables = await Promise.all([
+    Table.create({ name: 'Table 1' }),
+    Table.create({ name: 'Table 2' }),
+    // ... more tables as needed
+  ])
+
+  // Ensure tables are saved and have IDs
+  await Promise.all(tables.map(table => table.save()))
+
+  // Creating Waitlist entries
+  const waitlistEntries = await Promise.all([
+    Waitlist.create({ playerId: players[0].id, tableId: tables[0].id, notes: 'Prefers window seat' }),
+    Waitlist.create({ playerId: players[1].id, tableId: tables[1].id, notes: 'Allergic to nuts' }),
+    // ... more waitlist entries as needed
+  ])
 
   console.log(`seeded ${users.length} users`)
+  console.log(`seeded ${players.length} players`)
+  console.log(`seeded ${tables.length} tables`)
+  console.log(`seeded ${waitlistEntries.length} waitlist entries`)
   console.log(`seeded successfully`)
+
   return {
     users: {
-      cody: users[0],
-    }
+      admin: users[0],
+    },
+    players,
+    tables,
+    waitlistEntries
   }
 }
 
