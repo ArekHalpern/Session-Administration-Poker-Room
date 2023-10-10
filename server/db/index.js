@@ -5,7 +5,8 @@ const { User } = require('./models/User');
 const { Table } = require('./models/Table');
 const { Player } = require('./models/Player');
 const { Seat } = require('./models/Seat');
-const { Waitlist } = require('./models/Waitlist');  // Import the Waitlist model
+const { Waitlist } = require('./models/Waitlist');  
+const { Session } = require('./models/Session');
 
 // Associations
 Player.belongsTo(Table, { foreignKey: 'tableId' });
@@ -23,6 +24,11 @@ Table.hasMany(Waitlist, { foreignKey: 'tableId', onDelete: 'CASCADE' });
 Waitlist.belongsTo(Player, { foreignKey: 'playerId' });
 Player.hasMany(Waitlist, { foreignKey: 'playerId', onDelete: 'CASCADE' });
 
+Session.belongsTo(Player, { foreignKey: 'playerId' });
+Session.belongsTo(Table, { foreignKey: 'tableId' });
+Player.hasMany(Session, { foreignKey: 'playerId' });
+Table.hasMany(Session, { foreignKey: 'tableId' });
+
 module.exports = {
   db,
   models: {
@@ -30,6 +36,7 @@ module.exports = {
     Table,
     Player,
     Seat,
-    Waitlist  
+    Waitlist,
+    Session
   },
 };

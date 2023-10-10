@@ -24,7 +24,7 @@ const TablesList = ({ tables, getTables, getSingleTable, deleteTable }) => {
           <Link to={`/tables/${table.id}`} key={table.id} onClick={() => getSingleTable(table.id)}>
             <Card className="table-card mb-4">
               <Card.Body>
-                <Card.Title>{table.name}</Card.Title>
+                <Card.Title>{table.number}</Card.Title>
               </Card.Body>
               <Card.Footer>
                 <Button variant="danger" className="delete-button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(table.id); }}>Delete</Button>

@@ -1,13 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Table, Button, Form } from 'react-bootstrap';
+import { Table, Button, Form, Modal } from 'react-bootstrap';
 import { getWaitlistThunk, updateWaitlistEntryThunk, deleteWaitlistEntryThunk, createWaitlistEntryThunk } from '../store/waitlist';
+import AddPlayerToWaitlist from './AddPlayerToWaitlist';  
 
 const WaitlistDashboard = ({ waitlist, getWaitlist, updateWaitlist, deleteFromWaitlist, createWaitlistEntry }) => {
+  console.log('waitlist prop:', waitlist);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    console.log('Calling getWaitlist');
     getWaitlist();
   }, [getWaitlist]);
+
+  const handleShowModal = () => setShowModal(true);
+  const handleHideModal = () => setShowModal(false);
 
   const handleUpdate = (id, updatedItem) => {
     updateWaitlist(updatedItem);
@@ -18,19 +25,22 @@ const WaitlistDashboard = ({ waitlist, getWaitlist, updateWaitlist, deleteFromWa
   };
 
   const handleCreate = () => {
-    const newEntry = {
-      playerName: '',
-      notes: '',
-      tableNumber: null,
-    };
-    createWaitlistEntry(newEntry);
+    handleShowModal();
   };
 
   return (
     <div>
       <Button variant="primary" onClick={handleCreate}>
-        Create Entry
+        Add Player to Waitlist
       </Button>
+      <Modal show={showModal} onHide={handleHideModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Player to Waitlist</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <AddPlayerToWaitlist handleHideModal={handleHideModal} />
+        </Modal.Body>
+      </Modal>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -41,11 +51,11 @@ const WaitlistDashboard = ({ waitlist, getWaitlist, updateWaitlist, deleteFromWa
           </tr>
         </thead>
         <tbody>
-      {(waitlist) && waitlist.map(item => (
+          {(waitlist) && waitlist.map(item => (
             <tr key={item.id}>
-              <td>{item.Player ? item.Player.name : ''}</td>
+              <td>{item.player ? item.player.name : ''}</td>
               <td>{item.notes}</td>
-              <td>{item.Table ? item.Table.number : ''}</td>
+              <td>{item.table ? item.table.number : ''}</td>
               <td>
                 <Button variant="success" onClick={() => handleUpdate(item.id, item)}>✔️</Button>
                 <Button variant="danger" onClick={() => handleDelete(item.id)}>❌</Button>
@@ -58,9 +68,13 @@ const WaitlistDashboard = ({ waitlist, getWaitlist, updateWaitlist, deleteFromWa
   );
 };
 
-const mapStateToProps = state => ({
-  waitlist: state.waitlist,
-});
+const mapStateToProps = state => {
+  console.log('Redux state:', state);  
+  return {
+    waitlist: state.waitlist,
+  };
+};
+
 
 const mapDispatchToProps = dispatch => ({
   getWaitlist: () => dispatch(getWaitlistThunk()),

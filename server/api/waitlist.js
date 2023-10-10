@@ -4,18 +4,19 @@ const { models: { Waitlist, Player, Table }} = require('../db');
 
 // GET /api/waitlist - Get the entire waitlist
 router.get('/', async (req, res, next) => {
-  try {
-    const waitlist = await Waitlist.findAll({
-      include: [
-        { model: Player, attributes: ['name'] },  // Include player name
-        { model: Table, attributes: ['name'] }  // Include table number
-      ]
-    });
-    res.json(waitlist);
-  } catch (err) {
-    next(err);
-  }
-});
+    try {
+      const waitlist = await Waitlist.findAll({
+        include: [
+          { model: Player, attributes: ['name'] },  // Include player name
+          { model: Table, attributes: ['number'] }  // Include table number, assuming the field is named 'number'
+        ]
+      });
+      console.log('Fetched waitlist:', JSON.stringify(waitlist, null, 2));  // Log the fetched waitlist
+      res.json(waitlist);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 // POST /api/waitlist - Create a new waitlist entry
 router.post('/', async (req, res, next) => {
@@ -61,3 +62,4 @@ router.delete('/:id', async (req, res, next) => {
 });
 
 module.exports = router;
+

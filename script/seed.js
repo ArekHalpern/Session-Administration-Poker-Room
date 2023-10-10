@@ -22,18 +22,12 @@ async function seed() {
     // ... more players as needed
   ])
 
-  // Ensure players are saved and have IDs
-  await Promise.all(players.map(player => player.save()))
-
   // Creating Tables
   const tables = await Promise.all([
-    Table.create({ name: 'Table 1' }),
-    Table.create({ name: 'Table 2' }),
+    Table.create({ number: '1' }),  // Updated 'name' to 'number'
+    Table.create({ number: '2' }),  // Updated 'name' to 'number'
     // ... more tables as needed
   ])
-
-  // Ensure tables are saved and have IDs
-  await Promise.all(tables.map(table => table.save()))
 
   // Creating Waitlist entries
   const waitlistEntries = await Promise.all([

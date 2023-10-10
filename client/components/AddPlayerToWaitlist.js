@@ -1,8 +1,7 @@
-// Import necessary dependencies
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createPlayer } from '../store';
-
+import { createPlayerAndAddToWaitlist } from '../store/waitlist';
 
 const AddPlayerToWaitlist = () => {
   // Use dispatch hook for dispatching actions
@@ -11,18 +10,26 @@ const AddPlayerToWaitlist = () => {
   // Use state hooks to manage form input values
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [notes, setNotes] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
 
   const handleSubmit = (event) => {
     // Prevent default form submission behavior
     event.preventDefault();
-
-    // Dispatch an action to create a new player
-    dispatch(createPlayer({ name, email }));
-
+  
+    // Convert tableNumber to a Number
+    const tableNumberNumeric = Number(tableNumber);
+  
+    // Dispatch an action to create a new player and add to the waitlist
+    dispatch(createPlayerAndAddToWaitlist({ name, email, notes, tableNumber: tableNumberNumeric }));
+  
     // Optionally clear the form inputs after submission
     setName('');
     setEmail('');
+    setNotes('');
+    setTableNumber('');
   };
+  
 
   return (
     <div className="add-player-form container">
@@ -40,13 +47,23 @@ const AddPlayerToWaitlist = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="email">Email (optional)</label>
+          <label htmlFor="notes">Notes</label>
           <input
-            type="email"
+            type="text"
             className="form-control"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="notes"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="tableNumber">Table Number</label>
+          <input
+            type="number"
+            className="form-control"
+            id="tableNumber"
+            value={tableNumber}
+            onChange={(e) => setTableNumber(e.target.value)}
           />
         </div>
         <button type="submit" className="btn btn-primary">Add Player</button>

@@ -3,15 +3,15 @@ const db = require('../db');
 
 // Table Model
 const Table = db.define('table', {
-    name: {
-      type: Sequelize.STRING,
-      unique: true,
-      allowNull: false
+    number: { 
+        type: Sequelize.INTEGER,
+        unique: true,
+        allowNull: false
     },
     status: {
-      type: Sequelize.ENUM('open', 'closed'),
-      defaultValue: 'open'
+        type: Sequelize.ENUM('open', 'closed'),
+        defaultValue: 'open'
     },
-  });
-  
-  module.exports = { Table };
+});
+
+module.exports = { Table };
