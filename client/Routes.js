@@ -4,7 +4,6 @@ import {withRouter, Route, Switch, Redirect} from 'react-router-dom'
 import { Login, Signup } from './components/AuthForm';
 import Home from './components/Home';
 import AddTable from './components/AddTable';
-import WaitlistDashboard from './components/WaitlistDashboard';
 import Waitlist from './components/WaitlistDashboard';
 import {me} from './store'
 

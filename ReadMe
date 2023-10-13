@@ -1,0 +1,43 @@
+1. Updating Models:
+1.1. Player Model:
+
+Ensure that your Player model has necessary fields like id, name, etc.
+1.2. Table Model:
+
+Your Table model should have fields like number and status to uniquely identify a table and know its current status.
+1.3. Seat Model (New):
+
+Create a new model Seat with fields like number (seat number on the table), tableId (foreign key to Table), and playerId (foreign key to Player). This will allow you to track which player is seated at which seat on which table.
+1.4. Session Model (Existing):
+
+Ensure your Session model has fields like startTime, endTime, playerId (foreign key to Player), tableId (foreign key to Table), and seatNumber (foreign key to Seat).
+2. Creating API Endpoints:
+2.1. Assign Player to Seat:
+
+Create an endpoint to assign a player to a seat on a table. This endpoint should:
+Check if the seat is empty and the table is open.
+Create a new row in the Seat model.
+Create a new row in the Session model with the startTime as the current time and endTime as null.
+2.2. Remove Player from Seat:
+
+Create an endpoint to remove a player from a seat. This endpoint should:
+Check if the seat is occupied by the player and the table is open.
+Update the corresponding row in the Session model to set the endTime as the current time.
+Remove the row from the Seat model.
+2.3. List Active Sessions:
+
+Create an endpoint to list all active sessions, showing which players are seated at which tables.
+2.4. List Past Sessions:
+
+Create an endpoint to list all past sessions, showing historical data of who played when and for how long.
+3. Creating Frontend Components:
+3.1. Table Management Component:
+
+Create a component to display all tables, their status, and the players seated at each table with an option to assign or remove players from seats.
+3.2. Session Log Component:
+
+Create a component to display active and past sessions with filters to view sessions by date, player, or table.
+3.3. Player Management Component:
+
+Create a component to add, update, or delete players.
+By breaking down the task into these manageable pieces and tackling them one by one, you'll be able to create a robust system to manage your poker room, players, tables, and sessions effectively.
