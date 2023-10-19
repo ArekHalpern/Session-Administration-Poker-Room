@@ -31,20 +31,44 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// PUT /api/waitlist/:id - Update a waitlist entry by id
-router.put('/:id', async (req, res, next) => {
-  try {
-    const waitlistEntry = await Waitlist.findByPk(req.params.id);
-    if (!waitlistEntry) {
-      res.status(404).send('Waitlist entry not found');
-    } else {
-      await waitlistEntry.update(req.body);
-      res.json(waitlistEntry);
+// POST /api/waitlist - Create a new waitlist entry
+router.post('/', async (req, res, next) => {
+    try {
+      const { playerId, notes } = req.body;
+  
+      const isOnWaitlist = await Waitlist.findOne({ where: { playerId } });
+      if (isOnWaitlist) {
+        return res.status(400).send('Player is already on the waitlist.');
+      }
+      
+      const waitlistEntry = await Waitlist.create({ playerId, notes });
+      
+      res.status(201).json(waitlistEntry);
+    } catch (err) {
+      next(err);
     }
-  } catch (err) {
-    next(err);
-  }
-});
+  });
+  
+  // GET /api/waitlist/player/:playerId - Check if a player is on the waitlist
+  router.get('/player/:playerId', async (req, res, next) => {
+    try {
+      const waitlistEntry = await Waitlist.findOne({ 
+        where: { playerId: req.params.playerId }, 
+        include: [
+          { model: Player, attributes: ['name'] },
+          { model: Table, attributes: ['number'] }
+        ] 
+      });
+      if (waitlistEntry) {
+        res.json(waitlistEntry);
+      } else {
+        res.status(404).send('Player not found on the waitlist.');
+      }
+    } catch (err) {
+      next(err);
+    }
+  });
+  
 
 // DELETE /api/waitlist/:id - Delete a waitlist entry by id
 router.delete('/:id', async (req, res, next) => {

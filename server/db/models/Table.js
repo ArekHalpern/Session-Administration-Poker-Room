@@ -8,10 +8,8 @@ const Table = db.define('table', {
         unique: true,
         allowNull: false
     },
-    status: {
-        type: Sequelize.ENUM('open', 'closed'),
-        defaultValue: 'open'
-    },
+
+    
 });
 
 module.exports = { Table };

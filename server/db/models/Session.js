@@ -11,7 +11,7 @@ const Session = db.define('session', {
     },
     endTime: {
         type: Sequelize.DATE,
-        allowNull: true  // This field will be null until the session ends
+        allowNull: true
     },
     duration: {
         type: Sequelize.VIRTUAL,  // Virtual field, not stored in DB
@@ -19,7 +19,7 @@ const Session = db.define('session', {
             if (this.endTime) {
                 return (new Date(this.endTime) - new Date(this.startTime)) / (1000 * 60);  // Duration in minutes
             }
-            return null;  // Duration is null if session hasn't ended
+            return null;
         }
     },
     playerId: {

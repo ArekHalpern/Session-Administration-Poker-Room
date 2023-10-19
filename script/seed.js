@@ -35,20 +35,6 @@ async function seed() {
     // ... more waitlist entries as needed
   ]);
 
-  // Creating Seats
-  const seats = await Promise.all([
-    Seat.create({ number: 1, tableId: tables[0].id }),
-    Seat.create({ number: 2, tableId: tables[0].id }),
-    // ... more seats as needed
-  ]);
-
-  // Assigning Players to Seats
-  await Promise.all([
-    seats[0].setPlayer(players[0]),
-    seats[1].setPlayer(players[1]),
-    // ... more player-seat assignments as needed
-  ]);
-
   // Creating Sessions
   const sessions = await Promise.all([
     Session.create({ playerId: players[0].id, tableId: tables[0].id }),
@@ -60,7 +46,6 @@ async function seed() {
   console.log(`seeded ${players.length} players`);
   console.log(`seeded ${tables.length} tables`);
   console.log(`seeded ${waitlistEntries.length} waitlist entries`);
-  console.log(`seeded ${seats.length} seats`);
   console.log(`seeded ${sessions.length} sessions`);
   console.log('seeded successfully');
 
@@ -71,7 +56,6 @@ async function seed() {
     players,
     tables,
     waitlistEntries,
-    seats,
     sessions
   };
 }

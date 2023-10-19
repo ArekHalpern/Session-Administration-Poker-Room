@@ -17,6 +17,23 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// GET /api/sessions/player/:playerId - Get all sessions for a specific player
+router.get('/player/:playerId', async (req, res, next) => {
+    try {
+      const sessions = await Session.findAll({
+        where: { playerId: req.params.playerId },
+        include: [
+          { model: Player, attributes: ['name'] },
+          { model: Table, attributes: ['number'] }
+        ]
+      });
+      res.json(sessions);
+    } catch (err) {
+      next(err);
+    }
+  });
+  
+
 // POST /api/sessions - Create a new session
 router.post('/', async (req, res, next) => {
   try {
@@ -51,7 +68,7 @@ router.delete('/:id', async (req, res, next) => {
       res.status(404).send('Session not found');
     } else {
       await session.destroy();
-      res.status(204).send();  // No Content
+      res.status(204).send();
     }
   } catch (err) {
     next(err);

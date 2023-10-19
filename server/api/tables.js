@@ -28,19 +28,29 @@ router.post('/', async (req, res, next) => {
     }
   });
 
-// GET /api/tables/:id - Get a single table by id
+// GET /api/tables/:id - Get a single table by id including its sessions
 router.get('/:id', async (req, res, next) => {
-  try {
-    const table = await Table.findByPk(req.params.id);
-    if (!table) {
-      res.status(404).send('Table not found');
-    } else {
-      res.json(table);
+    try {
+      const table = await Table.findByPk(req.params.id, {
+        include: [
+          {
+            model: Session,
+            as: 'sessions',
+            include: [Player]  // if you want to include player details in each session
+          }
+        ]
+      });
+      
+      if (!table) {
+        res.status(404).send('Table not found');
+      } else {
+        res.json(table);
+      }
+    } catch (err) {
+      next(err);
     }
-  } catch (err) {
-    next(err);
-  }
-});
+  });
+  
 
 // PUT /api/tables/:id - Update a table by id
 router.put('/:id', async (req, res, next) => {
