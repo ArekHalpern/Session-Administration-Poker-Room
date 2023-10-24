@@ -19,13 +19,12 @@ const TablesList = ({ tables, fetchTablesThunk, deleteTableThunk }) => {
       await deleteTableThunk(tableId);
     }
   };
-  
+
   return (
     <Container className="mt-4">
       <CardGroup>
         {tables.map(table => (
           <Card className="table-card mb-4" key={table.id}>
-            {/* Updated Link */}
             <Link to={`/tables/${table.id}`} className="stretched-link" />
             <Card.Body>
               <Card.Title>Table {table.number}</Card.Title>

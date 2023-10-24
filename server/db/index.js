@@ -10,7 +10,8 @@ const { Session } = require('./models/Session');
 // Associations
 
 Waitlist.belongsTo(Player, { foreignKey: 'playerId' });
-Player.hasMany(Waitlist, { foreignKey: 'playerId', onDelete: 'CASCADE' });
+Player.hasMany(Waitlist, { foreignKey: 'playerId'});
+
 
 Waitlist.belongsTo(Table);
 Table.hasMany(Waitlist);

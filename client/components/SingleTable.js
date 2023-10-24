@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, Container, Card } from 'react-bootstrap';
-import { fetchSingleTableThunk, addPlayerThunk, removePlayerThunk } from '../store/tables';
+import { fetchSingleTableThunk, removePlayerThunk } from '../store/tables';
+import AddPlayer from './AddPlayer';
 
-const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlayerThunk, match }) => {
+const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match }) => {
     const [showModal, setShowModal] = useState(false);
-  
+
     useEffect(() => {
-        console.log('useEffect triggered with table ID:', match.params.id);
         fetchSingleTableThunk(match.params.id);
     }, [fetchSingleTableThunk, match.params.id]);
 
-    useEffect(() => {
-        console.log('Table data updated:', table);
-    }, [table]);
-  
-    const handleAddPlayer = (playerId) => {
-        console.log('Adding player with ID:', playerId);
-        addPlayerThunk(table.id, playerId);
+    const handleRemovePlayer = async (playerId) => {
+        await removePlayerThunk(table.id, playerId);
+        fetchSingleTableThunk(match.params.id); 
     };
-  
-    const handleRemovePlayer = (playerId) => {
-        console.log('Removing player with ID:', playerId);
-        removePlayerThunk(table.id, playerId);
-    };
-  
+
+    const activeSessions = table?.sessions?.filter(session => !session.endTime) || [];
+    const endedSessions = table?.sessions?.filter(session => session.endTime) || [];
+
     return (
         <div className="table-card">
             <Button variant="primary" onClick={() => setShowModal(true)}>
@@ -34,9 +28,10 @@ const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlaye
                 <Modal.Header closeButton>
                     <Modal.Title>Add Player to Table</Modal.Title>
                 </Modal.Header>
-                {/* <Modal.Body>
-                    <AddPlayerToTable onCloseModal={() => setShowModal(false)} />
-                </Modal.Body> */}
+                {console.log('table', table)}
+                <Modal.Body>
+                    <AddPlayer tableId={table ? table.id : null} onCloseModal={() => setShowModal(false)} />
+                </Modal.Body>
             </Modal>
             <Container className="mt-4">
                 <Card>
@@ -51,7 +46,7 @@ const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlaye
                                 </tr>
                             </thead>
                             <tbody>
-                                {table && table.sessions ? table.sessions.map(session => (
+                                {activeSessions.map(session => (
                                     <tr key={session.id}>
                                         <td>{session.player ? session.player.name : 'loading...'}</td>
                                         <td>{new Date(session.startTime).toLocaleString()}</td>
@@ -61,9 +56,32 @@ const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlaye
                                             </Button>
                                         </td>
                                     </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </Card.Body>
+                </Card>
+                <Card className="mt-4"> 
+                    <Card.Header>Ended Sessions</Card.Header>
+                    <Card.Body>
+                        <Table striped bordered hover responsive>
+                            <thead>
+                                <tr>
+                                    <th>Player Name</th>
+                                    <th>Session Start Time</th>
+                                    <th>Session End Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {endedSessions.length > 0 ? endedSessions.map(session => (
+                                    <tr key={session.id}>
+                                        <td>{session.player ? session.player.name : 'loading...'}</td>
+                                        <td>{new Date(session.startTime).toLocaleString()}</td>
+                                        <td>{new Date(session.endTime).toLocaleString()}</td>
+                                    </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan="3">No players at this table</td>
+                                        <td colSpan="3">No ended sessions</td>
                                     </tr>
                                 )}
                             </tbody>
@@ -77,16 +95,12 @@ const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlaye
 
 const mapStateToProps = (state, ownProps) => {
     const tableId = ownProps.match.params.id;
-    console.log('state.tables:', state.tables);
-    console.log('tableId:', tableId);
     const table = state.tables.find(table => table.id.toString() === tableId);
     return { table };
 };
 
-
 const mapDispatchToProps = {
     fetchSingleTableThunk: fetchSingleTableThunk,
-    addPlayerThunk: addPlayerThunk,
     removePlayerThunk: removePlayerThunk,
 };
 

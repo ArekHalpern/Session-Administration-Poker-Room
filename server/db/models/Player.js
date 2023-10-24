@@ -10,6 +10,7 @@ const Player = db.define('player', {
     type: Sequelize.STRING,
     allowNull: true
   },
+  
 });
 
 module.exports = { Player };

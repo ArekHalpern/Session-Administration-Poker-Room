@@ -5,6 +5,7 @@ const ADD_TO_WAITLIST = 'ADD_TO_WAITLIST';
 const REMOVE_FROM_WAITLIST = 'REMOVE_FROM_WAITLIST';
 const SET_SESSIONS = 'SET_SESSIONS';
 const END_SESSION = 'END_SESSION';
+const SET_PLAYERS = 'SET_PLAYERS';
 
 // Initial State
 const initialState = {
@@ -33,7 +34,22 @@ export const endSession = sessionId => ({
   sessionId
 });
 
+export const setPlayers = players => ({
+  type: SET_PLAYERS,
+  players
+});
+
+
 // Thunk Creators
+export const fetchPlayersThunk = () => async dispatch => {
+  try {
+    const response = await axios.get('/api/players'); 
+    dispatch(setPlayers(response.data));
+  } catch (error) {
+    console.error(error); 
+  }
+};
+
 export const fetchSessionsForPlayer = playerId => async dispatch => {
     const response = await axios.get(`/api/sessions/player/${playerId}`);
     dispatch(setSessions(response.data));
@@ -74,6 +90,8 @@ export default function(state = initialState, action) {
       const updatedSessions = state.sessions.map(session => 
         session.id === action.sessionId ? {...session, endTime: new Date()} : session);
       return { ...state, sessions: updatedSessions };
+      case SET_PLAYERS:  
+      return { ...state, players: action.players };
     default:
       return state;
   }

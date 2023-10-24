@@ -18,6 +18,8 @@ async function seed() {
   const players = await Promise.all([
     Player.create({ name: 'John Doe' }),
     Player.create({ name: 'Jane Smith' }),
+    Player.create({ name: 'Bob Jones' }),
+    Player.create({ name: 'Sally Brown' }),
     // ... more players as needed
   ]);
 
