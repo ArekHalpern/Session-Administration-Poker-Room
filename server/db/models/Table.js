@@ -8,6 +8,11 @@ const Table = db.define('table', {
         unique: true,
         allowNull: false
     },
+    capacity: {
+        type: Sequelize.INTEGER,    
+    },
+
+
 
     
 });

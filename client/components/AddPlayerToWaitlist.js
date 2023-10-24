@@ -1,35 +1,32 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createPlayerAndAddToWaitlist } from '../store/waitlist';
+import { createPlayerAndAddToWaitlistThunk } from '../store/waitlist';
 
 const AddPlayerToWaitlist = () => {
-  // Use dispatch hook for dispatching actions
   const dispatch = useDispatch();
 
-  // Use state hooks to manage form input values
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [notes, setNotes] = useState('');
   const [tableNumber, setTableNumber] = useState('');
 
   const handleSubmit = (event) => {
-    // Prevent default form submission behavior
     event.preventDefault();
-  
-    // Convert tableNumber to a Number
+
     const tableNumberNumeric = Number(tableNumber);
-  
-    // Dispatch an action to create a new player and add to the waitlist
-    dispatch(createPlayerAndAddToWaitlist({ name, email, notes, tableNumber: tableNumberNumeric }));
-  
-    // Optionally clear the form inputs after submission
-    setName('');
-    setEmail('');
-    setNotes('');
-    setTableNumber('');
+
+    if (!isNaN(tableNumberNumeric)) {
+      dispatch(createPlayerAndAddToWaitlistThunk({ name, email, notes, tableNumber: tableNumberNumeric }));
+
+      // Clear the form inputs after submission
+      setName('');
+      setEmail('');
+      setNotes('');
+      setTableNumber('');
+    } else {
+      alert('Please enter a valid table number.');
+    }
   };
-  
 
   return (
     <div className="add-player-form container">
@@ -47,14 +44,24 @@ const AddPlayerToWaitlist = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="notes">Notes</label>
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
+            type="email"
+            className="form-control"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="notes">Notes</label>
+          <textarea
             className="form-control"
             id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-          />
+          ></textarea>
         </div>
         <div className="form-group">
           <label htmlFor="tableNumber">Table Number</label>
@@ -64,6 +71,7 @@ const AddPlayerToWaitlist = () => {
             id="tableNumber"
             value={tableNumber}
             onChange={(e) => setTableNumber(e.target.value)}
+            required
           />
         </div>
         <button type="submit" className="btn btn-primary">Add Player</button>

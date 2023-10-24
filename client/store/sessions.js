@@ -2,55 +2,67 @@ import axios from 'axios';
 
 // Initial State
 const initialSessionState = {
-    sessions: [],  // An array to hold all session data
-    currentSession: null,  // To hold data for a player's current session
+    sessions: [],
+    currentSession: null,
 };
 
 // Action Types
-const START_SESSION = 'START_SESSION';
-const END_SESSION = 'END_SESSION';
-const GET_PLAYER_SESSIONS = 'GET_PLAYER_SESSIONS';
+const SET_CURRENT_SESSION = 'SET_CURRENT_SESSION';
+const UPDATE_SESSION = 'UPDATE_SESSION';
+const SET_PLAYER_SESSIONS = 'SET_PLAYER_SESSIONS';
 
 // Action Creators
-const startSession = (playerId, tableId) => ({ type: START_SESSION, playerId, tableId });
-const endSession = sessionId => ({ type: END_SESSION, sessionId });
-const getPlayerSessions = (playerId, sessions) => ({ type: GET_PLAYER_SESSIONS, playerId, sessions });
+const setCurrentSession = session => ({ type: SET_CURRENT_SESSION, session });
+const updateSession = session => ({ type: UPDATE_SESSION, session });
+const setPlayerSessions = sessions => ({ type: SET_PLAYER_SESSIONS, sessions });
 
 // Thunk Creators
 export const startSessionThunk = (playerId, tableId) => async dispatch => {
-    const response = await axios.post('/api/sessions', { playerId, tableId });
-    dispatch(startSession(response.data));
+    try {
+        const response = await axios.post('/api/sessions', { playerId, tableId });
+        dispatch(setCurrentSession(response.data));
+    } catch (error) {
+        console.error('Error starting session:', error);
+    }
 };
 
 export const endSessionThunk = sessionId => async dispatch => {
-    const response = await axios.put(`/api/sessions/${sessionId}/end`);
-    dispatch(endSession(sessionId));
+    try {
+        const response = await axios.put(`/api/sessions/${sessionId}/end`);
+        dispatch(updateSession({ ...response.data, endTime: new Date().toISOString() }));
+    } catch (error) {
+        console.error('Error ending session:', error);
+    }
 };
 
 export const getPlayerSessionsThunk = playerId => async dispatch => {
-    const response = await axios.get(`/api/sessions/player/${playerId}`);
-    dispatch(getPlayerSessions(playerId, response.data));
+    try {
+        const response = await axios.get(`/api/sessions/player/${playerId}`);
+        dispatch(setPlayerSessions(response.data));
+    } catch (error) {
+        console.error('Error fetching player sessions:', error);
+    }
 };
 
 // Reducer
 const sessionReducer = (state = initialSessionState, action) => {
     switch (action.type) {
-        case START_SESSION:
+        case SET_CURRENT_SESSION:
             return {
                 ...state,
-                sessions: [...state.sessions, action.data], 
-                currentSession: action.data, 
+                sessions: [...state.sessions, action.session],
+                currentSession: action.session,
             };
-        case END_SESSION:
+        case UPDATE_SESSION:
             const updatedSessions = state.sessions.map(session => 
-                session.id === action.sessionId ? { ...session, endTime: new Date().toISOString() } : session
+                session.id === action.session.id ? action.session : session
             );
             return {
                 ...state,
                 sessions: updatedSessions,
-                currentSession: null 
+                currentSession: null, 
             };
-        case GET_PLAYER_SESSIONS:
+        case SET_PLAYER_SESSIONS:
             return {
                 ...state,
                 sessions: action.sessions

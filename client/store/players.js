@@ -1,129 +1,80 @@
 import axios from 'axios';
 
-// Action Types
-const GET_PLAYERS = 'GET_PLAYERS';
-const ADD_PLAYER = 'ADD_PLAYER';
-const UPDATE_PLAYER = 'UPDATE_PLAYER';
-const REMOVE_PLAYER = 'REMOVE_PLAYER';
-const ADD_PLAYER_TO_TABLE = 'ADD_PLAYER_TO_TABLE';
-const ASSIGN_PLAYER_TO_SEAT = 'ASSIGN_PLAYER_TO_SEAT';
-
-
-// Action Creators
-export const getPlayers = players => ({ type: GET_PLAYERS, players });
-export const addPlayer = player => ({ type: ADD_PLAYER, player });
-export const updatePlayer = player => ({ type: UPDATE_PLAYER, player });
-export const removePlayer = playerId => ({ type: REMOVE_PLAYER, playerId });
-export const addPlayerToTable = (tableId, seat) => ({ type: ADD_PLAYER_TO_TABLE, tableId, seat });
-export const assignPlayerToSeat = (tableId, seatId, seat) => ({ type: ASSIGN_PLAYER_TO_SEAT, tableId, seatId, seat });
-
-
-// Thunk Creators
-export const fetchPlayers = () => async dispatch => {
-  try {
-    const { data } = await axios.get('/api/players');
-    dispatch(getPlayers(data));
-  } catch (err) {
-    console.error('Error fetching players:', err);
-  }
-};
-
-export const createPlayer = newPlayer => async dispatch => {
-  try {
-    const { data } = await axios.post('/api/players', newPlayer);
-    dispatch(addPlayer(data));
-  } catch (err) {
-    console.error('Error adding player:', err);
-  }
-};
-
-export const editPlayer = (playerId, updates) => async dispatch => {
-  try {
-    const { data } = await axios.put(`/api/players/${playerId}`, updates);
-    dispatch(updatePlayer(data));
-  } catch (err) {
-    console.error('Error updating player:', err);
-  }
-};
-
-export const deletePlayer = playerId => async dispatch => {
-  try {
-    await axios.delete(`/api/players/${playerId}`);
-    dispatch(removePlayer(playerId));
-  } catch (err) {
-    console.error('Error deleting player:', err);
-  }
-};
-
-export const addPlayerToTableThunk = (tableId, playerId) => async dispatch => {
-    try {
-      const { data } = await axios.post(`/api/tables/${tableId}/seats`, { playerId });
-      dispatch(addPlayerToTable(tableId, data));
-    } catch (error) {
-      console.error('Error adding player to table:', error);
-    }
-  };
-  
-  export const assignPlayerToSeatThunk = (tableId, seatId, playerId) => async dispatch => {
-    try {
-      const { data } = await axios.put(`/api/tables/${tableId}/seats/${seatId}`, { playerId });
-      dispatch(assignPlayerToSeat(tableId, seatId, data));
-    } catch (error) {
-      console.error('Error assigning player to seat:', error);
-    }
-  };
+// Actions
+const ADD_TO_WAITLIST = 'ADD_TO_WAITLIST';
+const REMOVE_FROM_WAITLIST = 'REMOVE_FROM_WAITLIST';
+const SET_SESSIONS = 'SET_SESSIONS';
+const END_SESSION = 'END_SESSION';
 
 // Initial State
 const initialState = {
-    players: [],
-    tables: []  // Assuming that each table object contains an array of seats
-  };
-  
-  // Reducer
-  export default function playersReducer(state = initialState, action) {
-    switch (action.type) {
-      case GET_PLAYERS:
-        return { ...state, players: action.players };
-      case ADD_PLAYER:
-        return { ...state, players: [...state.players, action.player] };
-      case UPDATE_PLAYER:
-        return {
-          ...state,
-          players: state.players.map(player =>
-            player.id === action.player.id ? action.player : player
-          )
-        };
-      case REMOVE_PLAYER:
-        return {
-          ...state,
-          players: state.players.filter(player => player.id !== action.playerId)
-        };
-      case ADD_PLAYER_TO_TABLE:
-        return {
-          ...state,
-          tables: state.tables.map(table => 
-            table.id === action.tableId 
-              ? {...table, seats: [...table.seats, action.seat]}
-              : table
-          )
-        };
-      case ASSIGN_PLAYER_TO_SEAT:
-        return {
-          ...state,
-          tables: state.tables.map(table =>
-            table.id === action.tableId
-              ? {
-                  ...table,
-                  seats: table.seats.map(seat =>
-                    seat.id === action.seatId
-                      ? { ...seat, ...action.seat }
-                      : seat
-                  )
-                }
-              : table
-          )
-        };
-      default:
-        return state;
-    }
+  waitlist: [],
+  sessions: []
+};
+
+// Action Creators
+export const addToWaitlist = player => ({
+  type: ADD_TO_WAITLIST,
+  player
+});
+
+export const removeFromWaitlist = playerId => ({
+  type: REMOVE_FROM_WAITLIST,
+  playerId
+});
+
+export const setSessions = sessions => ({
+  type: SET_SESSIONS,
+  sessions
+});
+
+export const endSession = sessionId => ({
+  type: END_SESSION,
+  sessionId
+});
+
+// Thunk Creators
+export const fetchSessionsForPlayer = playerId => async dispatch => {
+    const response = await axios.get(`/api/sessions/player/${playerId}`);
+    dispatch(setSessions(response.data));
+};
+
+export const addToWaitlistThunk = (playerId, notes) => async dispatch => {
+    const response = await axios.post('/api/waitlist', { playerId, notes });
+    dispatch(addToWaitlist(response.data));
+};
+
+export const removeFromWaitlistThunk = waitlistId => async dispatch => {
+    await axios.delete(`/api/waitlist/${waitlistId}`);
+    dispatch(removeFromWaitlist(waitlistId));
+};
+
+export const assignPlayerToTableThunk = (playerId, tableId) => async (dispatch, getState) => {
+    const currentSessions = getState().sessions.sessions; // adjust based on your state tree shape
+    const response = await axios.post('/api/sessions', { playerId, tableId });
+    dispatch(setSessions([...currentSessions, response.data])); // Add the new session
+};
+
+
+export const removePlayerFromTableThunk = sessionId => async dispatch => {
+    await axios.put(`/api/sessions/${sessionId}/end`);
+    dispatch(endSession(sessionId));
+};
+
+// Reducer
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case ADD_TO_WAITLIST:
+      return { ...state, waitlist: [...state.waitlist, action.player] };
+    case REMOVE_FROM_WAITLIST:
+      return { ...state, waitlist: state.waitlist.filter(player => player.id !== action.playerId) };
+    case SET_SESSIONS:
+      return { ...state, sessions: action.sessions };
+    case END_SESSION:
+      const updatedSessions = state.sessions.map(session => 
+        session.id === action.sessionId ? {...session, endTime: new Date()} : session);
+      return { ...state, sessions: updatedSessions };
+    default:
+      return state;
   }
+}

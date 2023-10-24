@@ -15,15 +15,16 @@ const Waitlist = db.define('waitlist', {
         key: 'id',
       },
       allowNull: false,
-    }
+    },
+      tableId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Table,
+      key: 'id',
+    },
+    allowNull: true,
+  },
   });
-//   tableId: {
-//     type: Sequelize.INTEGER,
-//     references: {
-//       model: Table,
-//       key: 'id',
-//     },
-//     allowNull: true,
-//   },
+
 
 module.exports = { Waitlist };

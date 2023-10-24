@@ -14,10 +14,10 @@ const Session = db.define('session', {
         allowNull: true
     },
     duration: {
-        type: Sequelize.VIRTUAL,  // Virtual field, not stored in DB
+        type: Sequelize.VIRTUAL,  
         get() {
             if (this.endTime) {
-                return (new Date(this.endTime) - new Date(this.startTime)) / (1000 * 60);  // Duration in minutes
+                return (new Date(this.endTime) - new Date(this.startTime)) / (1000 * 60);  
             }
             return null;
         }
