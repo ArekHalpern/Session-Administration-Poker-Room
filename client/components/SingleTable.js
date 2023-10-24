@@ -77,10 +77,12 @@ const SingleTable = ({ table, fetchSingleTableThunk, addPlayerThunk, removePlaye
 
 const mapStateToProps = (state, ownProps) => {
     const tableId = ownProps.match.params.id;
-    const table = state.tables.find(table => table.id === tableId);
-    console.log('Mapped state to props, found table:', table);
+    console.log('state.tables:', state.tables);
+    console.log('tableId:', tableId);
+    const table = state.tables.find(table => table.id.toString() === tableId);
     return { table };
 };
+
 
 const mapDispatchToProps = {
     fetchSingleTableThunk: fetchSingleTableThunk,

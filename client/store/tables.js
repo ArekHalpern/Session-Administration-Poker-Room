@@ -119,32 +119,29 @@ export default function tablesReducer(state = initialState, action) {
   switch (action.type) {
     case CREATE_TABLE:
       return [...state, action.table];
+
     case UPDATE_TABLE:
       return state.map(table => 
         table.id === action.table.id ? action.table : table
       );
+
     case DELETE_TABLE:
       return state.filter(table => table.id !== action.tableId);
+
     case SET_TABLES:
       return action.tables;
-      case SET_SINGLE_TABLE:
-  console.log('SET_SINGLE_TABLE action payload:', action.table);
-  // rest of the code...
 
-        const index = state.findIndex(table => table.id === action.table.id);
-        if (index !== -1) {
-            const newState = [...state];
-            newState[index] = action.table;
-            return newState;
-        } else {
-            return [...state, action.table];
-        }    
+    case SET_SINGLE_TABLE:
+     const updatedState = state.filter(table => table.id !== action.table.id); 
+      return [...updatedState, action.table];
+      
     case ADD_PLAYER:
       return state.map(table =>
         table.id === action.tableId
           ? { ...table, currentSession: action.session }
           : table
       );
+      
     case REMOVE_PLAYER:
       return state.map(table =>
         table.id === action.tableId
