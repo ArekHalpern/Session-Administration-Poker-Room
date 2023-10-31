@@ -9,12 +9,10 @@ const { Session } = require('./models/Session');
 
 // Associations
 
-Waitlist.belongsTo(Player, { foreignKey: 'playerId' });
-Player.hasMany(Waitlist, { foreignKey: 'playerId'});
-
-
-Waitlist.belongsTo(Table);
-Table.hasMany(Waitlist);
+// Waitlist.belongsTo(Player, { foreignKey: 'playerId' });
+// Player.hasMany(Waitlist, { foreignKey: 'playerId'});
+// Waitlist.belongsTo(Table);
+// Table.hasMany(Waitlist);
 
 
 Session.belongsTo(Player, { foreignKey: 'playerId' });

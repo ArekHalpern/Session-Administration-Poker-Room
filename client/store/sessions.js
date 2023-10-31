@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { fetchSingleTableThunk } from './tables';
 
 // Initial State
 const initialSessionState = {
@@ -19,8 +20,9 @@ const setPlayerSessions = sessions => ({ type: SET_PLAYER_SESSIONS, sessions });
 // Thunk Creators
 export const createSessionThunk = (playerName, tableId) => async dispatch => {
     try {
-        const response = await axios.post('/api/sessions', { name: playerName, tableId });  // Adjusted the payload
+        const response = await axios.post('/api/sessions', { name: playerName, tableId });
         dispatch(setCurrentSession(response.data));
+        dispatch(fetchSingleTableThunk(tableId));  // Re-fetch table data
     } catch (error) {
         console.error('Error creating session:', error);
     }

@@ -30,25 +30,23 @@ async function seed() {
     // ... more tables as needed
   ]);
 
-  // Creating Waitlist entries
-  const waitlistEntries = await Promise.all([
-    Waitlist.create({ playerId: players[0].id, tableId: tables[0].id, notes: 'Prefers window seat' }),
-    Waitlist.create({ playerId: players[1].id, tableId: tables[1].id, notes: 'Allergic to nuts' }),
-    // ... more waitlist entries as needed
-  ]);
+  // // Creating Waitlist entries
+  // const waitlistEntries = await Promise.all([
+  //   Waitlist.create({ playerId: players[0].id, tableId: tables[0].id, notes: 'Prefers window seat' }),
+  //   Waitlist.create({ playerId: players[1].id, tableId: tables[1].id, notes: 'Allergic to nuts' }),
+  //   // ... more waitlist entries as needed
+  // ]);
 
   // Creating Sessions
-  const sessions = await Promise.all([
-    Session.create({ playerId: players[0].id, tableId: tables[0].id }),
-    Session.create({ playerId: players[1].id, tableId: tables[0].id }),
-    // ... more sessions as needed
-  ]);
+  // const sessions = await Promise.all([
+  //   Session.create({ playerId: players[0].id, tableId: tables[0].id }),
+  //   Session.create({ playerId: players[1].id, tableId: tables[0].id }),
+  //   // ... more sessions as needed
+  // ]);
 
   console.log(`seeded ${users.length} users`);
   console.log(`seeded ${players.length} players`);
   console.log(`seeded ${tables.length} tables`);
-  console.log(`seeded ${waitlistEntries.length} waitlist entries`);
-  console.log(`seeded ${sessions.length} sessions`);
   console.log('seeded successfully');
 
   return {
@@ -57,8 +55,6 @@ async function seed() {
     },
     players,
     tables,
-    waitlistEntries,
-    sessions
   };
 }
 
@@ -80,5 +76,4 @@ if (module === require.main) {
   runSeed();
 }
 
-// we export the seed function for testing purposes (see `./seed.spec.js`)
 module.exports = seed;
