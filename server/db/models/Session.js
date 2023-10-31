@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
-const { Player } = require('./Player');  // Import Player model
-const { Table } = require('./Table');  // Import Table model
+const { Player } = require('./Player'); 
+const { Table } = require('./Table');  
 
 const Session = db.define('session', {
+
     startTime: {
         type: Sequelize.DATE,
         allowNull: false,

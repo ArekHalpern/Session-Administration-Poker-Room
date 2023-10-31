@@ -6,8 +6,8 @@ const UPDATE_TABLE = 'UPDATE_TABLE';
 const DELETE_TABLE = 'DELETE_TABLE';
 const SET_TABLES = 'SET_TABLES';
 const SET_SINGLE_TABLE = 'SET_SINGLE_TABLE';
-const ADD_PLAYER = 'ADD_PLAYER';
-const REMOVE_PLAYER = 'REMOVE_PLAYER';
+const ADD_SESSION = 'ADD_SESSION';
+const REMOVE_SESSION = 'REMOVE_SESSION';
 
 // Action Creators
 const createTable = table => ({
@@ -35,14 +35,14 @@ const setSingleTable = table => ({
   table,
 });
 
-const addPlayer = (tableId, session) => ({
-  type: ADD_PLAYER,
+const addSession = (tableId, session) => ({
+  type: ADD_SESSION,
   tableId,
   session,
 });
 
-const removePlayer = (tableId, session) => ({
-  type: REMOVE_PLAYER,
+const removeSession = (tableId, session) => ({
+  type: REMOVE_SESSION,
   tableId,
   session,
 });
@@ -93,23 +93,24 @@ export const fetchSingleTableThunk = tableId => async dispatch => {
   }
 };
 
-export const addPlayerThunk = (tableId, playerId) => async dispatch => {
+export const addSessionThunk = (tableId, playerId) => async dispatch => {
   try {
-    const res = await axios.post(`/api/tables/${tableId}/addPlayer`, { playerId });
-    dispatch(addPlayer(tableId, res.data));
+    const res = await axios.post(`/api/tables/${tableId}/addSession`, { playerId });
+    dispatch(addSession(tableId, res.data));
   } catch (error) {
-    console.error('Failed to add player:', error);
+    console.error('Failed to add session:', error);
   }
 };
 
-export const removePlayerThunk = (tableId, playerId) => async dispatch => {
+export const removeSessionThunk = (tableId, playerId) => async dispatch => {
   try {
-    const res = await axios.post(`/api/tables/${tableId}/removePlayer`, { playerId });
-    dispatch(removePlayer(tableId, res.data));
+    const res = await axios.post(`/api/tables/${tableId}/removeSession`, { playerId });
+    dispatch(removeSession(tableId, res.data));
   } catch (error) {
-    console.error('Failed to remove player:', error);
+    console.error('Failed to remove session:', error);
   }
 };
+
 
 // Initial State
 const initialState = [];
@@ -135,19 +136,19 @@ export default function tablesReducer(state = initialState, action) {
      const updatedState = state.filter(table => table.id !== action.table.id); 
       return [...updatedState, action.table];
       
-    case ADD_PLAYER:
-      return state.map(table =>
-        table.id === action.tableId
-          ? { ...table, currentSession: action.session }
-          : table
-      );
-      
-    case REMOVE_PLAYER:
-      return state.map(table =>
-        table.id === action.tableId
-          ? { ...table, currentSession: null }
-          : table
-      );
+      case ADD_SESSION:
+        return state.map(table =>
+          table.id === action.tableId
+            ? { ...table, currentSession: action.session }
+            : table
+        );
+        
+      case REMOVE_SESSION:
+        return state.map(table =>
+          table.id === action.tableId
+            ? { ...table, currentSession: null }
+            : table
+        );
 
 
     default:

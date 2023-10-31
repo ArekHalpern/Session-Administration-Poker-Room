@@ -37,9 +37,14 @@ router.get('/player/:playerId', async (req, res, next) => {
 // POST /api/sessions - Create a new session
 router.post('/', async (req, res, next) => {
   try {
-    const { playerId, tableId } = req.body;
-    const session = await Session.create({ playerId, tableId });
-    res.status(201).json(session);
+    const { name, tableId } = req.body;  // Adjusted the destructuring
+    const player = await Player.findOne({ where: { name } });
+    if (!player) {
+      res.status(400).send('Player not found');
+    } else {
+      const session = await Session.create({ playerId: player.id, tableId });
+      res.status(201).json(session);
+    }
   } catch (err) {
     next(err);
   }

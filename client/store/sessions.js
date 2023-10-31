@@ -17,6 +17,15 @@ const updateSession = session => ({ type: UPDATE_SESSION, session });
 const setPlayerSessions = sessions => ({ type: SET_PLAYER_SESSIONS, sessions });
 
 // Thunk Creators
+export const createSessionThunk = (playerName, tableId) => async dispatch => {
+    try {
+        const response = await axios.post('/api/sessions', { name: playerName, tableId });  // Adjusted the payload
+        dispatch(setCurrentSession(response.data));
+    } catch (error) {
+        console.error('Error creating session:', error);
+    }
+};
+
 export const startSessionThunk = (playerId, tableId) => async dispatch => {
     try {
         const response = await axios.post('/api/sessions', { playerId, tableId });

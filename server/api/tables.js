@@ -84,19 +84,17 @@ router.delete('/:id', async (req, res, next) => {
 
 
 // POST /api/tables/:id/addPlayer - Add a player to a table and start a session
-router.post('/:id/addPlayer', async (req, res, next) => {
+router.post('/:id/addSession', async (req, res, next) => {
   try {
     const table = await Table.findByPk(req.params.id);
     if (!table) {
-      res.status(404).send('Table not found');
-      return;
+      return res.status(404).send('Table not found');  
     }
 
     const { playerId } = req.body;
     const player = await Player.findByPk(playerId);
     if (!player) {
-      res.status(404).send('Player not found');
-      return;
+      return res.status(404).send('Player not found'); 
     }
 
     const session = await Session.create({
@@ -105,27 +103,23 @@ router.post('/:id/addPlayer', async (req, res, next) => {
       startTime: new Date(),  // session starts now
     });
 
-    res.status(201).json(session);
+    res.status(201).json(session); 
   } catch (err) {
     next(err);
   }
 });
 
-
-// POST /api/tables/:id/removePlayer - Remove a player from a table and end the session
-router.post('/:id/removePlayer', async (req, res, next) => {
+router.post('/:id/removeSession', async (req, res, next) => {
   try {
     const table = await Table.findByPk(req.params.id);
     if (!table) {
-      res.status(404).send('Table not found');
-      return;
+      return res.status(404).send('Table not found');  
     }
 
     const { playerId } = req.body;
     const player = await Player.findByPk(playerId);
     if (!player) {
-      res.status(404).send('Player not found');
-      return;
+      return res.status(404).send('Player not found');
     }
 
     // Find the active session for this player and table
@@ -133,23 +127,21 @@ router.post('/:id/removePlayer', async (req, res, next) => {
       where: { 
         playerId,
         tableId: table.id,
-        endTime: null  
+        endTime: null  // looking for ongoing session
       }
     });
 
     if (!session) {
-      res.status(404).send('Session not found');
-      return;
+      return res.status(404).send('Session not found');
     }
 
     // End the session
-    await session.update({ endTime: new Date() });
+    await session.update({ endTime: new Date() }); 
 
-    res.json(session);
+    res.json(session);  // Respond with the updated session
   } catch (err) {
     next(err);
   }
 });
-
 
 module.exports = router;

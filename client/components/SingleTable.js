@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, Container, Card } from 'react-bootstrap';
-import { fetchSingleTableThunk, removePlayerThunk } from '../store/tables';
-import AddPlayer from './AddPlayer';
+import { fetchSingleTableThunk, removeSessionThunk } from '../store/tables';  // Updated import
+import AddSession from './AddSession';  // Updated import
 
-const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match }) => {
+const SingleTable = ({ table, fetchSingleTableThunk, removeSessionThunk, match }) => {  // Updated prop
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         fetchSingleTableThunk(match.params.id);
     }, [fetchSingleTableThunk, match.params.id]);
 
-    const handleRemovePlayer = async (playerId) => {
-        await removePlayerThunk(table.id, playerId);
+    const handleRemoveSession = async (sessionId) => {  // Renamed function
+        await removeSessionThunk(table.id, sessionId);  // Updated thunk
         fetchSingleTableThunk(match.params.id); 
     };
 
@@ -26,11 +26,10 @@ const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match })
             </Button>
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Add Player to Table</Modal.Title>
+                    <Modal.Title>Add Player to Table</Modal.Title> 
                 </Modal.Header>
-                {console.log('table', table)}
                 <Modal.Body>
-                    <AddPlayer tableId={table ? table.id : null} onCloseModal={() => setShowModal(false)} />
+                    <AddSession tableId={table ? table.id : null} onCloseModal={() => setShowModal(false)} /> 
                 </Modal.Body>
             </Modal>
             <Container className="mt-4">
@@ -48,10 +47,10 @@ const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match })
                             <tbody>
                                 {activeSessions.map(session => (
                                     <tr key={session.id}>
-                                        <td>{session.player ? session.player.name : 'loading...'}</td>
+                                        <td>{session.player.name}</td> 
                                         <td>{new Date(session.startTime).toLocaleString()}</td>
                                         <td>
-                                            <Button variant="danger" onClick={() => handleRemovePlayer(session.player.id)}>
+                                            <Button variant="danger" onClick={() => handleRemoveSession(session.id)}>
                                                 Remove
                                             </Button>
                                         </td>
@@ -67,7 +66,7 @@ const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match })
                         <Table striped bordered hover responsive>
                             <thead>
                                 <tr>
-                                    <th>Player Name</th>
+                                    <th>Player Name</th> 
                                     <th>Session Start Time</th>
                                     <th>Session End Time</th>
                                 </tr>
@@ -75,7 +74,7 @@ const SingleTable = ({ table, fetchSingleTableThunk, removePlayerThunk, match })
                             <tbody>
                                 {endedSessions.length > 0 ? endedSessions.map(session => (
                                     <tr key={session.id}>
-                                        <td>{session.player ? session.player.name : 'loading...'}</td>
+                                        <td>{session.player.name}</td> 
                                         <td>{new Date(session.startTime).toLocaleString()}</td>
                                         <td>{new Date(session.endTime).toLocaleString()}</td>
                                     </tr>
@@ -101,7 +100,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
     fetchSingleTableThunk: fetchSingleTableThunk,
-    removePlayerThunk: removePlayerThunk,
+    removeSessionThunk: removeSessionThunk,  // Updated prop
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SingleTable);
